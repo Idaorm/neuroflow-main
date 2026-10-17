@@ -1,0 +1,29 @@
+{
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "shell:allow-stdin-write",
+    "shell:allow-kill",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "python",
+          "cmd": "python",
+          "args": [
+            {
+              "validator": ".*[\\\\/]backend\\.py$"
+            }
+          ]
+        }
+      ]
+    },
+    "fs:default",
+    "core:window:allow-destroy"
+  ]
+}

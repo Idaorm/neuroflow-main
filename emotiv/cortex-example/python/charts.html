@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NeuroFlow — Live Session</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --nf-bg: #f4f4f2;
+            --nf-surface: #ffffff;
+            --nf-text: #111111;
+            --nf-text-soft: #6b6b66;
+            --nf-muted: #8a8a85;
+            --nf-border: #ececea;
+            --nf-border-strong: #e5e5e0;
+            --nf-dark-1: #1a1d17;
+            --nf-dark-2: #20241d;
+            --nf-dark-3: #0f110d;
+            --nf-success: #1f8a3f;
+            --nf-danger: #c23b32;
+            --nf-warning: #d8a63e;
+
+            --metric-focus: #4e73df;
+            --metric-engagement: #1cc88a;
+            --metric-excitement: #f6c23e;
+            --metric-stress: #e74a3b;
+            --metric-relaxation: #36b9cc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--nf-bg);
+            color: var(--nf-text);
+            font-family: "Nunito", sans-serif;
+        }
+
+        #wrapper {
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Sidebar */
+        #accordionSidebar.sidebar {
+            width: 17rem !important;
+            min-height: 100vh;
+            background: linear-gradient(145deg, var(--nf-dark-1) 0%, var(--nf-dark-2) 52%, var(--nf-dark-3) 100%) !important;
+            box-shadow: 12px 0 36px rgba(15, 17, 13, .12);
+            padding: 0 0 1.25rem;
+        }
+
+        .sidebar .sidebar-brand {
+            height: auto;
+            min-height: 6.5rem;
+            padding: 1.4rem 1.25rem;
+            justify-content: flex-start !important;
+            text-decoration: none;
+        }
+
+        .sidebar-brand-icon {
+            width: 2.7rem;
+            height: 2.7rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .14);
+            color: rgba(255, 255, 255, .88);
+            margin-right: .85rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand-icon i {
+            font-size: 1rem;
+        }
+
+        .sidebar-brand-text {
+            margin: 0 !important;
+            text-align: left;
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.05;
+            letter-spacing: -.02em;
+            font-weight: 900;
+            text-transform: none !important;
+        }
+
+        .sidebar-brand-text small {
+            display: block;
+            margin-top: .42rem;
+            font-size: .58rem !important;
+            font-weight: 700;
+            letter-spacing: .18em;
+            color: rgba(255, 255, 255, .42);
+        }
+
+        .sidebar hr.sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, .09);
+            margin: .35rem 1rem 1rem;
+        }
+
+        .sidebar .sidebar-heading {
+            padding: 0 1.25rem;
+            margin: .2rem 0 .45rem;
+            color: rgba(255, 255, 255, .34);
+            font-size: .6rem;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .sidebar .nav-item {
+            padding: 0 .75rem;
+        }
+
+        .sidebar .nav-item .nav-link {
+            width: 100%;
+            margin: .15rem 0;
+            padding: .78rem .9rem;
+            border-radius: 999px;
+            color: rgba(255, 255, 255, .63);
+            font-size: .82rem;
+            font-weight: 700;
+            transition: background .2s ease, color .2s ease, transform .2s ease;
+        }
+
+        .sidebar .nav-item .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .08);
+            transform: translateX(2px);
+        }
+
+        .sidebar .nav-item.active .nav-link {
+            color: #111;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+        }
+
+        .sidebar .nav-item .nav-link i {
+            color: inherit;
+            opacity: .9;
+            margin-right: .45rem;
+            font-size: .8rem;
+        }
+        
+        /* Sidebar live controls */
+        .rec-section,
+        .marker-panel {
+            padding: .3rem .55rem 1rem;
+        }
+
+        .rec-card,
+        .marker-card,
+        .device-card {
+            background: rgba(255, 255, 255, .07);
+            border: 1px solid rgba(255, 255, 255, .09);
+            border-radius: 18px;
+            padding: .9rem;
+        }
+
+        .rec-label,
+        .marker-status-label {
+            font-size: .58rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            color: rgba(255, 255, 255, .34);
+        }
+
+        .rec-value {
+            margin-top: .2rem;
+            font-size: 1.7rem;
+            line-height: 1;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -.04em;
+        }
+
+        .rec-sub {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .46);
+            margin-top: .35rem;
+        }
+
+        #btn-save,
+        #btn-marker-start,
+        #btn-marker-stop {
+            border: 0;
+            border-radius: 999px;
+            min-height: 2.3rem;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .02em;
+            transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+        }
+
+        #btn-save:hover:not(:disabled),
+        #btn-marker-start:hover:not(:disabled),
+        #btn-marker-stop:hover:not(:disabled) {
+            transform: translateY(-1px);
+            filter: brightness(.96);
+        }
+
+        #btn-save:disabled,
+        #btn-marker-start:disabled,
+        #btn-marker-stop:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        #last-save-info {
+            font-size: .62rem;
+            color: rgba(255, 255, 255, .3);
+            margin-top: .45rem;
+            word-break: break-all;
+        }
+
+        .marker-status-box {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 12px;
+            padding: .55rem .7rem;
+            margin-bottom: .7rem;
+        }
+
+        .marker-status-value {
+            margin-top: .12rem;
+            font-size: .8rem;
+            font-weight: 800;
+            color: #f6c23e;
+            word-break: break-word;
+        }
+
+        .marker-status-value.idle {
+            color: rgba(255, 255, 255, .3);
+            font-style: italic;
+        }
+
+        #marker-text {
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            box-shadow: none;
+            font-size: .74rem;
+        }
+
+        #marker-text::placeholder {
+            color: rgba(255, 255, 255, .3);
+        }
+
+        #marker-text:focus {
+            border-color: rgba(255, 255, 255, .28);
+            background: rgba(255, 255, 255, .1);
+            box-shadow: none;
+        }
+
+        /* Main content */
+        #content-wrapper {
+            background: var(--nf-bg);
+        }
+
+        #content {
+            min-height: 100vh;
+        }
+
+        .nf-shell {
+            width: min(100%, 1440px);
+            margin: 0 auto;
+            padding: 2.25rem 1.5rem 3rem;
+        }
+
+        /* Header */
+        .nf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .nf-eyebrow {
+            margin: 0 0 .35rem;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--nf-muted);
+        }
+
+        .nf-title {
+            margin: 0;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.045em;
+            color: var(--nf-text);
+        }
+
+        .nf-subtitle {
+            margin: .55rem 0 0;
+            color: var(--nf-text-soft);
+            font-size: .86rem;
+        }
+
+        .nf-status-wrap {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: .65rem;
+        }
+
+        .session-badge,
+        .connection-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            min-height: 2.4rem;
+            padding: 0 .9rem;
+            border-radius: 999px;
+            font-size: .67rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            background: #fff;
+            color: var(--nf-muted);
+            border: 1px solid var(--nf-border-strong);
+        }
+
+        .session-badge.recording {
+            background: var(--nf-text);
+            border-color: var(--nf-text);
+            color: #fff;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #c7c7c0;
+        }
+
+        .status-dot.is-live {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: .42;
+                transform: scale(1.35);
+            }
+        }
+
+        /* Hero */
+        .live-hero {
+            position: relative;
+            overflow: hidden;
+            min-height: 170px;
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            border-radius: 28px;
+            color: #fff;
+            background: linear-gradient(145deg, var(--nf-dark-1) 0%, var(--nf-dark-2) 52%, var(--nf-dark-3) 100%);
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .35);
+        }
+
+        .live-hero::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            right: -70px;
+            top: -90px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow:
+                0 0 0 32px rgba(255, 255, 255, .025),
+                0 0 0 64px rgba(255, 255, 255, .018);
+        }
+
+        .hero-kicker {
+            margin: 0 0 .8rem;
+            font-size: .66rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .48);
+        }
+
+        .hero-title {
+            max-width: 680px;
+            margin: 0;
+            font-size: clamp(1.85rem, 3.4vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.06;
+            letter-spacing: -.045em;
+        }
+
+        .hero-meta {
+            position: absolute;
+            right: 1.35rem;
+            bottom: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .85rem 1rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid rgba(255, 255, 255, .12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .hero-meta-label {
+            margin: 0 0 .15rem;
+            font-size: .55rem;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+        }
+
+        .hero-meta-value {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        /* Cards */
+        .nf-card {
+            background: var(--nf-surface);
+            border: 1px solid var(--nf-border);
+            border-radius: 24px;
+            box-shadow: none;
+        }
+
+        .kpi-card {
+            height: 100%;
+            padding: 1.2rem;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--nf-border-strong);
+            box-shadow: 0 12px 30px rgba(17, 17, 17, .06);
+        }
+
+        .kpi-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .75rem;
+            margin-bottom: .85rem;
+        }
+
+        .kpi-label {
+            margin: 0;
+            font-size: .63rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .14em;
+            color: var(--nf-muted);
+        }
+
+        .metric-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .kpi-value {
+            font-size: 1.9rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -.045em;
+            color: var(--nf-text);
+        }
+
+        .kpi-bar-wrap {
+            height: 6px;
+            background: #efefec;
+            border-radius: 999px;
+            margin-top: .8rem;
+            overflow: hidden;
+        }
+
+        .kpi-bar {
+            height: 100%;
+            border-radius: 999px;
+            transition: width .6s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        .kpi-level {
+            min-height: 1rem;
+            margin-top: .45rem;
+            font-size: .68rem;
+            font-weight: 800;
+            color: var(--nf-muted);
+        }
+
+        .chart-card {
+            overflow: hidden;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.15rem 1.3rem .65rem;
+        }
+
+        .chart-kicker {
+            margin: 0 0 .25rem;
+            font-size: .58rem;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--nf-muted);
+        }
+
+        .chart-title {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.2;
+            font-weight: 900;
+            letter-spacing: -.02em;
+            color: var(--nf-text);
+        }
+
+        .chart-inline-value {
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        .chart-body {
+            padding: .5rem 1.3rem 1.35rem;
+        }
+
+        .chart-area {
+            height: 285px;
+            position: relative;
+        }
+
+        .chart-area-sm {
+            height: 205px;
+            position: relative;
+        }
+
+        .chart-pie {
+            height: 285px;
+            position: relative;
+        }
+
+        /* Tooltip */
+        #custom-tooltip {
+            position: fixed;
+            display: none;
+            min-width: 180px;
+            z-index: 9999;
+            pointer-events: none;
+            padding: 11px 13px;
+            border-radius: 14px;
+            background: rgba(17, 17, 17, .94);
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, .2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        #custom-tooltip .tt-title {
+            margin-bottom: 6px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            color: rgba(255, 255, 255, .45);
+            font-size: .62rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        #custom-tooltip .tt-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 4px 0;
+        }
+
+        #custom-tooltip .tt-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        #custom-tooltip .tt-label {
+            flex: 1;
+            color: rgba(255, 255, 255, .72);
+            font-size: .76rem;
+        }
+
+        #custom-tooltip .tt-val {
+            color: #fff;
+            font-size: .8rem;
+            font-weight: 900;
+        }
+
+        #custom-tooltip .tt-bar-wrap {
+            width: 46px;
+            height: 4px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        #custom-tooltip .tt-bar {
+            height: 100%;
+            border-radius: 999px;
+        }
+
+        /* Toast */
+        #toast-wrap {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 9999;
+        }
+
+        .toast-msg {
+            margin-top: 8px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: #fff;
+            border: 1px solid var(--nf-border);
+            border-left: 4px solid var(--nf-success);
+            box-shadow: 0 16px 32px rgba(17, 17, 17, .1);
+            color: var(--nf-text);
+            font-size: .82rem;
+            font-weight: 700;
+            animation: slideIn .3s ease;
+        }
+
+        .toast-msg.error {
+            border-left-color: var(--nf-danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(70px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            #accordionSidebar.sidebar {
+                width: 6.5rem !important;
+            }
+
+            .sidebar .sidebar-brand {
+                justify-content: center !important;
+            }
+
+            .sidebar-brand-icon {
+                margin-right: 0;
+            }
+
+            .sidebar-brand-text,
+            .sidebar .sidebar-heading,
+            .rec-section,
+            .marker-panel,
+            .sidebar .nav-link span {
+                display: none !important;
+            }
+
+            .nf-shell {
+                padding: 1.5rem 1rem 2rem;
+            }
+
+            .nf-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nf-status-wrap {
+                justify-content: flex-start;
+            }
+
+            .hero-meta {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                width: fit-content;
+                margin-top: 1.35rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            #accordionSidebar.sidebar {
+                display: none;
+            }
+
+            .nf-shell {
+                padding-left: .8rem;
+                padding-right: .8rem;
+            }
+
+            .live-hero {
+                padding: 1.4rem;
+                border-radius: 22px;
+            }
+
+            .nf-card {
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+<div id="wrapper">
+
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                NeuroFlow
+                <small>LIVE SESSION</small>
+            </div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <div class="sidebar-heading">Navigation</div>
+
+        <li class="nav-item active">
+            <a class="nav-link" href="charts.html">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Live Performance</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="motion.html">
+                <i class="fas fa-fw fa-running"></i>
+                <span>Motion Data</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Recording</div>
+        <li class="nav-item">
+            <div class="rec-section">
+                <div class="rec-card">
+                    <div class="rec-label">Samples Acquired</div>
+                    <div class="rec-value" id="sample-count">0</div>
+                    <div class="rec-sub" id="session-duration">Session: 0s</div>
+                    <button id="btn-save" class="btn btn-success btn-block btn-sm mt-3" disabled>
+                        <i class="fas fa-file-excel mr-1"></i> Export Excel
+                    </button>
+                    <div id="last-save-info"></div>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Experiment Marker</div>
+        <li class="nav-item">
+            <div class="marker-panel">
+                <div class="marker-card">
+                    <div class="marker-status-box">
+                        <div class="marker-status-label">Active Marker</div>
+                        <div class="marker-status-value idle" id="marker-status">none</div>
+                    </div>
+
+                    <input id="marker-text" class="form-control form-control-sm mb-2" placeholder="Experiment / phase name...">
+
+                    <button id="btn-marker-start" class="btn btn-warning btn-block btn-sm mb-2" disabled>
+                        <i class="fas fa-tag mr-1"></i> Start Marker
+                    </button>
+
+                    <button id="btn-marker-stop" class="btn btn-danger btn-block btn-sm" disabled>
+                        <i class="fas fa-stop mr-1"></i> Stop Marker
+                    </button>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Device</div>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-headset"></i>
+                <span>EMOTIV EPOC X</span>
+            </a>
+        </li>
+    </ul>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <main class="nf-shell">
+
+                <header class="nf-header">
+                    <div>
+                        <p class="nf-eyebrow">Experiment Control Center</p>
+                        <h1 class="nf-title">NeuroFlow Live</h1>
+                        <p class="nf-subtitle">Real-time cognitive performance monitoring from the active EEG session.</p>
+                    </div>
+
+                    <div class="nf-status-wrap">
+                        <span class="session-badge" id="rec-badge">Waiting</span>
+                        <span class="connection-pill">
+                            <span class="status-dot" id="status-dot"></span>
+                            <span id="status-text">Waiting...</span>
+                        </span>
+                    </div>
+                </header>
+
+                <section class="live-hero">
+                    <p class="hero-kicker">Live Monitoring</p>
+                    <h2 class="hero-title">Real-time cognitive performance and session activity.</h2>
+
+                    <div class="hero-meta">
+                        <div>
+                            <p class="hero-meta-label">Device</p>
+                            <p class="hero-meta-value">EMOTIV EPOC X</p>
+                        </div>
+                        <div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);">
+                            <i class="fas fa-wave-square" style="color:rgba(255,255,255,.72);font-size:.85rem;"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="row mb-1">
+                    <div class="col-xl col-md-4 col-sm-6 mb-4">
+                        <div class="nf-card kpi-card">
+                            <div class="kpi-topline">
+                                <p class="kpi-label">Focus</p>
+                                <span class="metric-dot" style="background:var(--metric-focus)"></span>
+                            </div>
+                            <div class="kpi-value" id="val-foc">—</div>
+                            <div class="kpi-bar-wrap"><div class="kpi-bar" id="bar-foc" style="width:0%;background:var(--metric-focus)"></div></div>
+                            <div class="kpi-level" id="lv-foc"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl col-md-4 col-sm-6 mb-4">
+                        <div class="nf-card kpi-card">
+                            <div class="kpi-topline">
+                                <p class="kpi-label">Engagement</p>
+                                <span class="metric-dot" style="background:var(--metric-engagement)"></span>
+                            </div>
+                            <div class="kpi-value" id="val-eng">—</div>
+                            <div class="kpi-bar-wrap"><div class="kpi-bar" id="bar-eng" style="width:0%;background:var(--metric-engagement)"></div></div>
+                            <div class="kpi-level" id="lv-eng"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl col-md-4 col-sm-6 mb-4">
+                        <div class="nf-card kpi-card">
+                            <div class="kpi-topline">
+                                <p class="kpi-label">Excitement</p>
+                                <span class="metric-dot" style="background:var(--metric-excitement)"></span>
+                            </div>
+                            <div class="kpi-value" id="val-exc">—</div>
+                            <div class="kpi-bar-wrap"><div class="kpi-bar" id="bar-exc" style="width:0%;background:var(--metric-excitement)"></div></div>
+                            <div class="kpi-level" id="lv-exc"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl col-md-6 col-sm-6 mb-4">
+                        <div class="nf-card kpi-card">
+                            <div class="kpi-topline">
+                                <p class="kpi-label">Stress</p>
+                                <span class="metric-dot" style="background:var(--metric-stress)"></span>
+                            </div>
+                            <div class="kpi-value" id="val-str">—</div>
+                            <div class="kpi-bar-wrap"><div class="kpi-bar" id="bar-str" style="width:0%;background:var(--metric-stress)"></div></div>
+                            <div class="kpi-level" id="lv-str"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl col-md-6 col-sm-6 mb-4">
+                        <div class="nf-card kpi-card">
+                            <div class="kpi-topline">
+                                <p class="kpi-label">Relaxation</p>
+                                <span class="metric-dot" style="background:var(--metric-relaxation)"></span>
+                            </div>
+                            <div class="kpi-value" id="val-rel">—</div>
+                            <div class="kpi-bar-wrap"><div class="kpi-bar" id="bar-rel" style="width:0%;background:var(--metric-relaxation)"></div></div>
+                            <div class="kpi-level" id="lv-rel"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="row">
+                    <div class="col-xl-8 col-lg-7 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Performance</p>
+                                    <h3 class="chart-title">Real-Time Performance Trends</h3>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-area"><canvas id="chartAll"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-5 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Snapshot</p>
+                                    <h3 class="chart-title">Current Distribution</h3>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-pie"><canvas id="chartDonut"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="row">
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Metric</p>
+                                    <h3 class="chart-title">Focus</h3>
+                                </div>
+                                <span class="chart-inline-value" id="inline-foc" style="color:var(--metric-focus)">—</span>
+                            </div>
+                            <div class="chart-body"><div class="chart-area-sm"><canvas id="chartFoc"></canvas></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Metric</p>
+                                    <h3 class="chart-title">Engagement</h3>
+                                </div>
+                                <span class="chart-inline-value" id="inline-eng" style="color:var(--metric-engagement)">—</span>
+                            </div>
+                            <div class="chart-body"><div class="chart-area-sm"><canvas id="chartEng"></canvas></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Metric</p>
+                                    <h3 class="chart-title">Excitement</h3>
+                                </div>
+                                <span class="chart-inline-value" id="inline-exc" style="color:var(--metric-excitement)">—</span>
+                            </div>
+                            <div class="chart-body"><div class="chart-area-sm"><canvas id="chartExc"></canvas></div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="row">
+                    <div class="col-xl-6 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Metric</p>
+                                    <h3 class="chart-title">Stress</h3>
+                                </div>
+                                <span class="chart-inline-value" id="inline-str" style="color:var(--metric-stress)">—</span>
+                            </div>
+                            <div class="chart-body"><div class="chart-area-sm"><canvas id="chartStr"></canvas></div></div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 mb-4">
+                        <div class="nf-card chart-card">
+                            <div class="chart-header">
+                                <div>
+                                    <p class="chart-kicker">Metric</p>
+                                    <h3 class="chart-title">Relaxation</h3>
+                                </div>
+                                <span class="chart-inline-value" id="inline-rel" style="color:var(--metric-relaxation)">—</span>
+                            </div>
+                            <div class="chart-body"><div class="chart-area-sm"><canvas id="chartRel"></canvas></div></div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+</div>
+
+<div id="custom-tooltip"></div>
+<div id="toast-wrap"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+<script>
+Chart.defaults.global.defaultFontFamily = "Nunito,sans-serif";
+Chart.defaults.global.defaultFontColor = "#8a8a85";
+
+localStorage.removeItem("bw_met_buf");
+localStorage.removeItem("bw_mot_hist");
+localStorage.removeItem("bw_ts");
+
+var BUFFER = 60, SMOOTH = 7;
+var rawBuf = { foc: [], eng: [], exc: [], str: [], rel: [] };
+var motHist = { q0: [], q1: [], q2: [], q3: [], accX: [], accY: [], accZ: [], magX: [], magY: [], magZ: [] };
+var MOT_KEYS = ["q0", "q1", "q2", "q3", "accX", "accY", "accZ", "magX", "magY", "magZ"];
+var sessionStart = null, sessionTimer = null, totalSamples = 0, ws_ref = null;
+
+var METRICS = [
+    { key: "foc", label: "Focus", color: "#4e73df", dash: [] },
+    { key: "eng", label: "Engagement", color: "#1cc88a", dash: [] },
+    { key: "exc", label: "Excitement", color: "#f6c23e", dash: [8, 4] },
+    { key: "str", label: "Stress", color: "#e74a3b", dash: [4, 4] },
+    { key: "rel", label: "Relaxation", color: "#36b9cc", dash: [12, 3, 3, 3] }
+];
+
+function rollingAvg(arr, w) {
+    var s = arr.slice(-w).filter(function(v) { return typeof v === "number" && Number.isFinite(v); });
+    if (!s.length) return null;
+    return s.reduce(function(a, b) { return a + b; }, 0) / s.length;
+}
+
+function levelLabel(v) {
+    if (v < 35) return '<span style="color:#1cc88a">● Low</span>';
+    if (v < 65) return '<span style="color:#d8a63e">● Medium</span>';
+    return '<span style="color:#c23b32">● High</span>';
+}
+
+function emptyLabels() {
+    return new Array(BUFFER).fill("");
+}
+
+function hexToRgba(hex, a) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+}
+
+function showToast(msg, isError) {
+    var w = document.getElementById("toast-wrap");
+    var d = document.createElement("div");
+    d.className = "toast-msg" + (isError ? " error" : "");
+    d.textContent = msg;
+    w.appendChild(d);
+    setTimeout(function() { d.remove(); }, 4500);
+}
+
+function saveToLocalStorage(sm, mot) {
+    localStorage.setItem("bw_met_buf", JSON.stringify({
+        foc: rawBuf.foc.slice(-BUFFER),
+        eng: rawBuf.eng.slice(-BUFFER),
+        exc: rawBuf.exc.slice(-BUFFER),
+        str: rawBuf.str.slice(-BUFFER),
+        rel: rawBuf.rel.slice(-BUFFER)
+    }));
+
+    if (mot) {
+        MOT_KEYS.forEach(function(k) {
+            motHist[k].push(mot[k] || 0);
+            if (motHist[k].length > BUFFER) motHist[k].shift();
+        });
+        localStorage.setItem("bw_mot_hist", JSON.stringify(motHist));
+        localStorage.setItem("bw_mot_last", JSON.stringify(mot));
+    }
+
+    localStorage.setItem("bw_ts", Date.now());
+}
+
+Chart.plugins.register({
+    afterDraw: function(chart) {
+        if (chart.tooltip._active && chart.tooltip._active.length) {
+            var ctx = chart.ctx, x = chart.tooltip._active[0]._model.x;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, chart.chartArea.top);
+            ctx.lineTo(x, chart.chartArea.bottom);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = "rgba(100,100,120,.28)";
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+});
+
+var tooltipEl = document.getElementById("custom-tooltip");
+
+function customTooltip(tm) {
+    if (tm.opacity === 0) {
+        tooltipEl.style.display = "none";
+        return;
+    }
+
+    if (tm.dataPoints && tm.dataPoints.length) {
+        var rows = tm.dataPoints.slice().sort(function(a, b) { return b.yLabel - a.yLabel; });
+        var html = '<div class="tt-title">Current Values</div>';
+
+        rows.forEach(function(pt) {
+            var m = METRICS[pt.datasetIndex], pct = Math.round(pt.yLabel);
+            html += '<div class="tt-row">' +
+                '<span class="tt-dot" style="background:' + m.color + '"></span>' +
+                '<span class="tt-label">' + m.label + '</span>' +
+                '<div class="tt-bar-wrap"><div class="tt-bar" style="width:' + pct + '%;background:' + m.color + '"></div></div>' +
+                '<span class="tt-val">' + pct + '%</span>' +
+                '</div>';
+        });
+
+        tooltipEl.innerHTML = html;
+    }
+
+    tooltipEl.style.display = "block";
+    tooltipEl.style.left = (tm._eventPosition.x + 16) + "px";
+    tooltipEl.style.top = (tm._eventPosition.y - 20) + "px";
+}
+
+var smOpts = {
+    maintainAspectRatio: false,
+    scales: {
+        xAxes: [{
+            gridLines: { display: false },
+            ticks: { display: false }
+        }],
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 25,
+                callback: function(v) { return v + "%"; },
+                fontColor: "#8a8a85"
+            },
+            gridLines: {
+                color: "#ececea",
+                borderDash: [3, 3],
+                zeroLineColor: "#ececea"
+            }
+        }]
+    },
+    legend: { display: false },
+    animation: { duration: 0 },
+    tooltips: {
+        mode: "index",
+        intersect: false,
+        callbacks: {
+            label: function(i) { return " " + Math.round(i.yLabel) + "%"; }
+        }
+    }
+};
+
+var allOpts = {
+    maintainAspectRatio: false,
+    scales: {
+        xAxes: [{
+            gridLines: { display: false },
+            ticks: { display: false }
+        }],
+        yAxes: [{
+            ticks: {
+                min: 0,
+                max: 100,
+                stepSize: 25,
+                callback: function(v) { return v + "%"; },
+                fontStyle: "bold",
+                fontColor: "#8a8a85"
+            },
+            gridLines: {
+                color: "#ececea",
+                borderDash: [3, 3],
+                zeroLineColor: "#ececea"
+            },
+            scaleLabel: {
+                display: true,
+                labelString: "Intensity",
+                fontStyle: "bold",
+                fontSize: 11,
+                fontColor: "#8a8a85"
+            }
+        }]
+    },
+    legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+            boxWidth: 14,
+            padding: 18,
+            fontFamily: "Nunito",
+            fontSize: 12,
+            fontColor: "#6b6b66",
+            usePointStyle: true
+        }
+    },
+    animation: { duration: 0 },
+    hover: { mode: "index", intersect: false, animationDuration: 0 },
+    tooltips: { enabled: false, custom: customTooltip, mode: "index", intersect: false }
+};
+
+function ds(label, color, dash, fill, thick) {
+    return {
+        label: label,
+        lineTension: .45,
+        backgroundColor: fill || "transparent",
+        borderColor: color,
+        borderWidth: thick || 2.5,
+        borderDash: dash || [],
+        pointRadius: 0,
+        pointHoverRadius: 7,
+        pointHoverBackgroundColor: color,
+        pointHoverBorderColor: "#fff",
+        pointHoverBorderWidth: 2,
+        data: new Array(BUFFER).fill(null)
+    };
+}
+
+var chartAll = new Chart(document.getElementById("chartAll"), {
+    type: "line",
+    data: {
+        labels: emptyLabels(),
+        datasets: [
+            ds("Focus", "#4e73df", [], hexToRgba("#4e73df", .06), 3),
+            ds("Engagement", "#1cc88a", [], hexToRgba("#1cc88a", .06), 3),
+            ds("Excitement", "#f6c23e", [8, 4], hexToRgba("#f6c23e", .06), 2.5),
+            ds("Stress", "#e74a3b", [4, 4], hexToRgba("#e74a3b", .06), 2.5),
+            ds("Relaxation", "#36b9cc", [12, 3, 3, 3], hexToRgba("#36b9cc", .06), 2.5)
+        ]
+    },
+    options: allOpts
+});
+
+function singleChart(id, color) {
+    return new Chart(document.getElementById(id), {
+        type: "line",
+        data: {
+            labels: emptyLabels(),
+            datasets: [ds("", color, [], hexToRgba(color, .12), 3)]
+        },
+        options: smOpts
+    });
+}
+
+var chartFoc = singleChart("chartFoc", "#4e73df"),
+    chartEng = singleChart("chartEng", "#1cc88a"),
+    chartExc = singleChart("chartExc", "#f6c23e"),
+    chartStr = singleChart("chartStr", "#e74a3b"),
+    chartRel = singleChart("chartRel", "#36b9cc");
+
+var chartDonut = new Chart(document.getElementById("chartDonut"), {
+    type: "doughnut",
+    data: {
+        labels: ["Focus", "Engagement", "Excitement", "Stress", "Relaxation"],
+        datasets: [{
+            data: [20, 20, 20, 20, 20],
+            backgroundColor: ["#4e73df", "#1cc88a", "#f6c23e", "#e74a3b", "#36b9cc"],
+            hoverBorderColor: "rgba(234,236,244,1)"
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        cutoutPercentage: 75,
+        legend: {
+            display: true,
+            position: "bottom",
+            labels: {
+                padding: 14,
+                boxWidth: 12,
+                fontFamily: "Nunito",
+                fontSize: 11,
+                fontColor: "#6b6b66"
+            }
+        },
+        animation: { animateScale: false, duration: 400 },
+        tooltips: {
+            callbacks: {
+                label: function(item, data) {
+                    return " " + data.labels[item.index] + ": " + Math.round(data.datasets[0].data[item.index]) + "%";
+                }
+            }
+        }
+    }
+});
+
+function updateKpi(id, val) {
+    if (val === null) {
+        document.getElementById("val-" + id).textContent = "—";
+        document.getElementById("bar-" + id).style.width = "0%";
+        document.getElementById("lv-" + id).textContent = "Unavailable";
+        var inline = document.getElementById("inline-" + id);
+        if (inline) inline.textContent = "—";
+        return;
+    }
+    var pct = Math.round(val);
+    document.getElementById("val-" + id).textContent = pct + "%";
+    document.getElementById("bar-" + id).style.width = pct + "%";
+    document.getElementById("lv-" + id).innerHTML = levelLabel(pct);
+    var el = document.getElementById("inline-" + id);
+    if (el) el.textContent = pct + "%";
+}
+
+function pushAll(chart, idx, val) {
+    var d = chart.data.datasets[idx].data;
+    d.push(val === null ? null : Math.round(val * 10) / 10);
+    if (d.length > BUFFER) d.shift();
+    chart.data.labels.push("");
+    if (chart.data.labels.length > BUFFER) chart.data.labels.shift();
+}
+
+function pushSingle(chart, val) {
+    var d = chart.data.datasets[0].data;
+    d.push(val === null ? null : Math.round(val * 10) / 10);
+    if (d.length > BUFFER) d.shift();
+    chart.data.labels.push("");
+    if (chart.data.labels.length > BUFFER) chart.data.labels.shift();
+}
+
+function startSessionTimer() {
+    if (sessionTimer) return;
+    sessionStart = Date.now();
+    sessionTimer = setInterval(function() {
+        var sec = Math.floor((Date.now() - sessionStart) / 1000),
+            m = Math.floor(sec / 60),
+            s = sec % 60;
+        document.getElementById("session-duration").textContent = "Session: " + (m > 0 ? m + "m " : "") + s + "s";
+    }, 1000);
+}
+
+function updateMarkerUI(label) {
+    var el = document.getElementById("marker-status");
+    if (label) {
+        el.textContent = label;
+        el.className = "marker-status-value";
+    } else {
+        el.textContent = "none";
+        el.className = "marker-status-value idle";
+    }
+}
+
+function sendMarker(label) {
+    if (!ws_ref || ws_ref.readyState !== WebSocket.OPEN) {
+        showToast("Server not connected", true);
+        return;
+    }
+    ws_ref.send(JSON.stringify({ action: "set_marker", label: label || "" }));
+}
+
+document.getElementById("marker-text").addEventListener("input", function() {
+    var hasText = this.value.trim().length > 0;
+    document.getElementById("btn-marker-start").disabled = !hasText || !ws_ref || ws_ref.readyState !== WebSocket.OPEN;
+});
+
+document.getElementById("btn-marker-start").addEventListener("click", function() {
+    var v = document.getElementById("marker-text").value.trim();
+    if (!v) return;
+    sendMarker(v);
+});
+
+document.getElementById("btn-marker-stop").addEventListener("click", function() {
+    sendMarker("");
+});
+
+document.getElementById("btn-save").addEventListener("click", function() {
+    if (!ws_ref || ws_ref.readyState !== WebSocket.OPEN) {
+        showToast("Server not connected", true);
+        return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Saving...';
+    ws_ref.send(JSON.stringify({ action: "save_excel" }));
+});
+
+function updateStreamStatus(state, message) {
+    var live = state === "streaming";
+    var dot = document.getElementById("status-dot");
+    dot.style.background = live ? "#7CFC98" : (state === "error" ? "#c23b32" : "#d8a63e");
+    dot.classList.toggle("is-live", live);
+    document.getElementById("status-text").textContent = message;
+    document.getElementById("rec-badge").textContent = live ? "Receiving data" : (state === "error" ? "Cortex error" : "Waiting for data");
+    document.getElementById("rec-badge").className = live ? "session-badge recording" : "session-badge";
+}
+
+function connect() {
+    var ws = new WebSocket("ws://localhost:8765");
+    ws_ref = ws;
+
+    ws.onopen = function() {
+        updateStreamStatus("waiting", "Connected to NeuroFlow; waiting for Cortex metrics");
+        ws.send(JSON.stringify({ action: "subscribe_status" }));
+        document.getElementById("btn-save").disabled = false;
+        document.getElementById("btn-marker-stop").disabled = false;
+
+        var txt = document.getElementById("marker-text").value.trim();
+        document.getElementById("btn-marker-start").disabled = !txt;
+        startSessionTimer();
+    };
+
+    ws.onmessage = function(evt) {
+        var msg = JSON.parse(evt.data);
+
+        if (msg.type === "stream_status") {
+            updateStreamStatus(msg.state, msg.message);
+            return;
+        }
+
+        if (msg.type === "save_result") {
+            var btn = document.getElementById("btn-save");
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-file-excel mr-1"></i> Export Excel';
+
+            if (msg.success) {
+                showToast("Saved: " + msg.filename + " (" + msg.rows.met + " metric samples)");
+                document.getElementById("last-save-info").textContent = "Last: " + msg.filename;
+            } else {
+                showToast(msg.filename, true);
+            }
+            return;
+        }
+
+        if (msg.type === "marker_result") {
+            updateMarkerUI(msg.active ? msg.label : "");
+            showToast(msg.active ? "Marker started: " + msg.label : "Marker stopped");
+            return;
+        }
+
+        if (msg.type === "data") {
+            updateStreamStatus("streaming", "Receiving EEG metrics");
+            totalSamples = msg.session_samples || totalSamples + 1;
+            document.getElementById("sample-count").textContent = totalSamples;
+            updateMarkerUI(msg.active_marker || "");
+
+            ["foc", "eng", "exc", "str", "rel"].forEach(function(k) {
+                rawBuf[k].push(typeof msg[k] === "number" && Number.isFinite(msg[k]) ? msg[k] : null);
+                if (rawBuf[k].length > 200) rawBuf[k].shift();
+            });
+
+            var sm = {
+                foc: rawBuf.foc[rawBuf.foc.length - 1] === null ? null : rollingAvg(rawBuf.foc, SMOOTH),
+                eng: rawBuf.eng[rawBuf.eng.length - 1] === null ? null : rollingAvg(rawBuf.eng, SMOOTH),
+                exc: rawBuf.exc[rawBuf.exc.length - 1] === null ? null : rollingAvg(rawBuf.exc, SMOOTH),
+                str: rawBuf.str[rawBuf.str.length - 1] === null ? null : rollingAvg(rawBuf.str, SMOOTH),
+                rel: rawBuf.rel[rawBuf.rel.length - 1] === null ? null : rollingAvg(rawBuf.rel, SMOOTH)
+            };
+
+            updateKpi("foc", sm.foc);
+            updateKpi("eng", sm.eng);
+            updateKpi("exc", sm.exc);
+            updateKpi("str", sm.str);
+            updateKpi("rel", sm.rel);
+
+            pushAll(chartAll, 0, sm.foc);
+            pushAll(chartAll, 1, sm.eng);
+            pushAll(chartAll, 2, sm.exc);
+            pushAll(chartAll, 3, sm.str);
+            pushAll(chartAll, 4, sm.rel);
+            chartAll.update();
+
+            pushSingle(chartFoc, sm.foc); chartFoc.update();
+            pushSingle(chartEng, sm.eng); chartEng.update();
+            pushSingle(chartExc, sm.exc); chartExc.update();
+            pushSingle(chartStr, sm.str); chartStr.update();
+            pushSingle(chartRel, sm.rel); chartRel.update();
+
+            chartDonut.data.datasets[0].data = [sm.foc, sm.eng, sm.exc, sm.str, sm.rel];
+            chartDonut.update();
+
+            saveToLocalStorage(sm, msg.mot || null);
+        }
+    };
+
+    ws.onclose = function() {
+        ws_ref = null;
+
+        var statusDot = document.getElementById("status-dot");
+        statusDot.style.background = "#c23b32";
+        statusDot.classList.remove("is-live");
+
+        document.getElementById("status-text").textContent = "Offline";
+        document.getElementById("rec-badge").textContent = "Disconnected";
+        document.getElementById("rec-badge").className = "session-badge";
+        document.getElementById("btn-save").disabled = true;
+        document.getElementById("btn-marker-start").disabled = true;
+        document.getElementById("btn-marker-stop").disabled = true;
+
+        setTimeout(connect, 3000);
+    };
+
+    ws.onerror = function() {
+        ws.close();
+    };
+}
+
+connect();
+</script>
+</body>
+</html>

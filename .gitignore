@@ -1,0 +1,102 @@
+# ============================================================
+# macOS
+# ============================================================
+.DS_Store
+**/.DS_Store
+
+# ============================================================
+# Node / React / Vite
+# ============================================================
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+**/.vite/
+
+# ============================================================
+# Tauri / Rust
+# ============================================================
+target/
+**/target/
+
+# ============================================================
+# Python
+# ============================================================
+.venv/
+**/.venv/
+venv/
+**/venv/
+env/
+**/env/
+
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ============================================================
+# Environment variables / secrets
+# ============================================================
+.env
+.env.*
+!.env.example
+
+# ============================================================
+# IDE
+# ============================================================
+.vscode/
+**/.vscode/
+.idea/
+**/.idea/
+
+# ============================================================
+# Logs / cache / temporary files
+# ============================================================
+*.log
+*.tmp
+.cache/
+**/.cache/
+
+# ============================================================
+# Generated session data
+# ============================================================
+sessione_*.xlsx
+Sessione_*.xlsx
+
+# Local backup files
+*.bak
+*.bak
+
+# Local backup files
+*.bak
+
+# ============================================================
+# Visual Studio / .NET build artifacts
+# ============================================================
+EyeTracker/Main/StreamEngine/.vs/
+EyeTracker/Main/StreamEngine/StreamEngine/bin/
+EyeTracker/Main/StreamEngine/StreamEngine/obj/
+
+# Temporary editor files
+.!*
+
+# ============================================================
+# EMOTIV Cortex examples not used by NeuroFlow
+# Keep only the Python integration used by the project
+# ============================================================
+emotiv/cortex-example/cpp-qt/
+emotiv/cortex-example/csharp/
+emotiv/cortex-example/nodejs/
+emotiv/cortex-example/unity/
+emotiv/cortex-example/.github/
+
+# ============================================================
+# Tobii Stream Engine SDK
+# Obtain separately according to Tobii licensing terms
+# ============================================================
+EyeTracker/Main/StreamEngine/StreamEngine/tobii/
+Icon?

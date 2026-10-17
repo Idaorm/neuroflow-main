@@ -1,0 +1,11 @@
+1. Collegare il dispositivo Tobii Eye Tracker 5
+2. Scaricare l'applicazione Tobii Experience dal microsoft store
+In caso di errore nell'installazione:
+	1. winget install --force 9NK75KF67S2N
+	2. In alternativa, scaricare il driver da: https://gaming.tobii.com/getstarted/?bundle=tobii-et5
+
+3. Installare le dipendenze richieste da Python con: "pip install -r requirements.txt"
+4. Inserire alla riga 204 del file Python il path dell'eseguibile C#
+
+Per la creazione del progetto C# fare riferimento a: https://web.archive.org/web/20250521113047/https://developer.tobii.com/product-integration/stream-engine/tutorial_csharp/
+(IMPORTANTE: alla riga 22 del file "Tobii.StreamEngine.Interop.cs" aggiungere public const string stream_engine_dll = "tobii\\lib\\tobii\\tobii_stream_engine";

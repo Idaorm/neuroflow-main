@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NeuroFlow — Motion Data</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --nf-bg: #f4f4f2;
+            --nf-surface: #ffffff;
+            --nf-text: #111111;
+            --nf-text-soft: #6b6b66;
+            --nf-muted: #8a8a85;
+            --nf-border: #ececea;
+            --nf-border-strong: #e5e5e0;
+            --nf-dark-1: #1a1d17;
+            --nf-dark-2: #20241d;
+            --nf-dark-3: #0f110d;
+            --nf-success: #1f8a3f;
+            --nf-warning: #d8a63e;
+
+            --quat-primary: #4e73df;
+            --quat-secondary: #36b9cc;
+            --quat-tertiary: #6f42c1;
+            --quat-muted: #858796;
+            --acc-color: #1cc88a;
+            --mag-color: #f6c23e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--nf-bg);
+            color: var(--nf-text);
+            font-family: "Nunito", sans-serif;
+        }
+
+        #wrapper {
+            min-height: 100vh;
+            align-items: stretch;
+        }
+
+        /* Sidebar */
+        #accordionSidebar.sidebar {
+            width: 17rem !important;
+            min-height: 100vh;
+            background: linear-gradient(145deg, var(--nf-dark-1) 0%, var(--nf-dark-2) 52%, var(--nf-dark-3) 100%) !important;
+            box-shadow: 12px 0 36px rgba(15, 17, 13, .12);
+            padding: 0 0 1.25rem;
+        }
+
+        .sidebar .sidebar-brand {
+            height: auto;
+            min-height: 6.5rem;
+            padding: 1.4rem 1.25rem;
+            justify-content: flex-start !important;
+            text-decoration: none;
+        }
+
+        .sidebar-brand-icon {
+            width: 2.7rem;
+            height: 2.7rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .14);
+            color: rgba(255, 255, 255, .88);
+            margin-right: .85rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand-icon i {
+            font-size: 1rem;
+        }
+
+        .sidebar-brand-text {
+            margin: 0 !important;
+            text-align: left;
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.05;
+            letter-spacing: -.02em;
+            font-weight: 900;
+            text-transform: none !important;
+        }
+
+        .sidebar-brand-text small {
+            display: block;
+            margin-top: .42rem;
+            font-size: .58rem !important;
+            font-weight: 700;
+            letter-spacing: .18em;
+            color: rgba(255, 255, 255, .42);
+        }
+
+        .sidebar hr.sidebar-divider {
+            border-top: 1px solid rgba(255, 255, 255, .09);
+            margin: .35rem 1rem 1rem;
+        }
+
+        .sidebar .sidebar-heading {
+            padding: 0 1.25rem;
+            margin: .2rem 0 .45rem;
+            color: rgba(255, 255, 255, .34);
+            font-size: .6rem;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .sidebar .nav-item {
+            padding: 0 .75rem;
+        }
+
+        .sidebar .nav-item .nav-link {
+            width: 100%;
+            margin: .15rem 0;
+            padding: .78rem .9rem;
+            border-radius: 999px;
+            color: rgba(255, 255, 255, .63);
+            font-size: .82rem;
+            font-weight: 700;
+            transition: background .2s ease, color .2s ease, transform .2s ease;
+        }
+
+        .sidebar .nav-item .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, .08);
+            transform: translateX(2px);
+        }
+
+        .sidebar .nav-item.active .nav-link {
+            color: #111;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+        }
+
+        .sidebar .nav-item .nav-link i {
+            color: inherit;
+            opacity: .9;
+            margin-right: .45rem;
+            font-size: .8rem;
+        }
+        
+        .device-meta-wrap {
+            padding: .2rem 1.3rem .9rem;
+        }
+
+        .device-meta {
+            padding: .85rem .9rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .device-meta-label {
+            margin: 0 0 .2rem;
+            color: rgba(255, 255, 255, .33);
+            font-size: .56rem;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .device-meta-value {
+            margin: 0;
+            color: rgba(255, 255, 255, .78);
+            font-size: .75rem;
+            font-weight: 800;
+        }
+
+        /* Main content */
+        #content-wrapper {
+            background: var(--nf-bg);
+        }
+
+        #content {
+            min-height: 100vh;
+        }
+
+        .nf-shell {
+            width: min(100%, 1440px);
+            margin: 0 auto;
+            padding: 2.25rem 1.5rem 3rem;
+        }
+
+
+        /* Header */
+        .nf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .nf-eyebrow {
+            margin: 0 0 .35rem;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--nf-muted);
+        }
+
+        .nf-title {
+            margin: 0;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: -.045em;
+            color: var(--nf-text);
+        }
+
+        .nf-subtitle {
+            margin: .55rem 0 0;
+            color: var(--nf-text-soft);
+            font-size: .86rem;
+        }
+
+        .nf-status-wrap {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: .65rem;
+        }
+
+        .session-badge,
+        .connection-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            min-height: 2.4rem;
+            padding: 0 .9rem;
+            border-radius: 999px;
+            font-size: .67rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            background: #fff;
+            color: var(--nf-muted);
+            border: 1px solid var(--nf-border-strong);
+        }
+
+        .session-badge.recording {
+            background: var(--nf-text);
+            border-color: var(--nf-text);
+            color: #fff;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #c7c7c0;
+        }
+
+        .status-dot.is-live {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: .42;
+                transform: scale(1.35);
+            }
+        }
+
+        /* Hero */
+        .live-hero {
+            position: relative;
+            overflow: hidden;
+            min-height: 170px;
+            margin-bottom: 1.7rem;
+            padding: 2rem;
+            border-radius: 28px;
+            color: #fff;
+            background: linear-gradient(145deg, var(--nf-dark-1) 0%, var(--nf-dark-2) 52%, var(--nf-dark-3) 100%);
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, .35);
+        }
+
+        .live-hero::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            right: -70px;
+            top: -90px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow:
+                0 0 0 32px rgba(255, 255, 255, .025),
+                0 0 0 64px rgba(255, 255, 255, .018);
+        }
+
+        .hero-kicker {
+            margin: 0 0 .8rem;
+            font-size: .66rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .48);
+        }
+
+        .hero-title {
+            max-width: 720px;
+            margin: 0;
+            font-size: clamp(1.85rem, 3.4vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.06;
+            letter-spacing: -.045em;
+        }
+
+        .hero-meta {
+            position: absolute;
+            right: 1.35rem;
+            bottom: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .85rem 1rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .09);
+            border: 1px solid rgba(255, 255, 255, .12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .hero-meta-label {
+            margin: 0 0 .15rem;
+            font-size: .55rem;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+        }
+
+        .hero-meta-value {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        /* Sections and cards */
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 2rem 0 .9rem;
+        }
+
+        .section-heading:first-of-type {
+            margin-top: .2rem;
+        }
+
+        .section-kicker {
+            margin: 0 0 .22rem;
+            font-size: .6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .16em;
+            color: var(--nf-muted);
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 1.12rem;
+            font-weight: 900;
+            letter-spacing: -.025em;
+            color: var(--nf-text);
+        }
+
+        .section-copy {
+            margin: .3rem 0 0;
+            max-width: 620px;
+            color: var(--nf-text-soft);
+            font-size: .78rem;
+        }
+
+        .nf-card {
+            background: var(--nf-surface);
+            border: 1px solid var(--nf-border);
+            border-radius: 24px;
+            box-shadow: none;
+        }
+
+        .motion-card {
+            height: 100%;
+            overflow: hidden;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .motion-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--nf-border-strong);
+            box-shadow: 0 12px 30px rgba(17, 17, 17, .06);
+        }
+
+        .motion-card-header,
+        .wide-chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.1rem 1.2rem .45rem;
+        }
+
+        .motion-card-title,
+        .wide-chart-title {
+            margin: 0;
+            color: var(--nf-text);
+            font-size: .92rem;
+            font-weight: 900;
+            letter-spacing: -.015em;
+        }
+
+        .signal-type {
+            margin: 0 0 .15rem;
+            color: var(--nf-muted);
+            font-size: .56rem;
+            font-weight: 800;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+        }
+
+        .val-badge {
+            padding: .35rem .55rem;
+            border-radius: 999px;
+            background: #f7f7f4;
+            border: 1px solid var(--nf-border);
+            font-size: .75rem;
+            font-weight: 900;
+            color: var(--nf-text);
+        }
+
+        .motion-card-body,
+        .wide-chart-body {
+            padding: .5rem 1.15rem 1.15rem;
+        }
+
+        .chart-area-sm {
+            height: 165px;
+            position: relative;
+        }
+
+        .chart-area-lg {
+            height: 235px;
+            position: relative;
+        }
+
+        .accent-line {
+            width: 36px;
+            height: 4px;
+            margin-top: .55rem;
+            border-radius: 999px;
+        }
+
+        /* Guide */
+        .guide-card {
+            padding: 1.4rem;
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .guide-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f3ef;
+            border: 1px solid var(--nf-border);
+            color: var(--nf-text-soft);
+            font-size: .75rem;
+        }
+
+        .guide-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: -.02em;
+        }
+
+        .guide-section {
+            height: 100%;
+            padding: 1rem;
+            border-radius: 18px;
+            background: #fafaf8;
+            border: 1px solid var(--nf-border);
+        }
+
+        .guide-section h6 {
+            margin-bottom: .55rem;
+            color: var(--nf-text) !important;
+            font-size: .82rem;
+            font-weight: 900;
+        }
+
+        .guide-section p {
+            color: var(--nf-text-soft) !important;
+        }
+
+        .guide-section .table {
+            margin-bottom: .55rem;
+            color: var(--nf-text-soft);
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .guide-section .table th {
+            border-color: var(--nf-border);
+            background: #f5f5f1;
+            color: var(--nf-muted);
+            font-size: .62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .guide-section .table td {
+            border-color: var(--nf-border);
+            font-size: .7rem;
+        }
+
+        .guide-note {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--nf-border);
+            color: var(--nf-muted);
+            font-size: .72rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            #accordionSidebar.sidebar {
+                width: 6.5rem !important;
+            }
+
+            .sidebar .sidebar-brand {
+                justify-content: center !important;
+            }
+
+            .sidebar-brand-icon {
+                margin-right: 0;
+            }
+
+            .sidebar-brand-text,
+            .sidebar .sidebar-heading,
+            .sidebar .nav-link span,
+            .device-meta-wrap {
+                display: none !important;
+            }
+
+            .nf-shell {
+                padding: 1.5rem 1rem 2rem;
+            }
+
+            .nf-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nf-status-wrap {
+                justify-content: flex-start;
+            }
+
+            .hero-meta {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                width: fit-content;
+                margin-top: 1.35rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            #accordionSidebar.sidebar {
+                display: none;
+            }
+
+            .nf-shell {
+                padding-left: .8rem;
+                padding-right: .8rem;
+            }
+
+            .live-hero {
+                padding: 1.4rem;
+                border-radius: 22px;
+            }
+
+            .nf-card {
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body id="page-top">
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center" href="#">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                NeuroFlow
+                <small>LIVE SESSION</small>
+            </div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <div class="sidebar-heading">Navigation</div>
+
+        <li class="nav-item">
+            <a class="nav-link" href="charts.html">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Live Performance</span>
+            </a>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link" href="motion.html">
+                <i class="fas fa-fw fa-running"></i>
+                <span>Motion Data</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Device</div>
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <i class="fas fa-fw fa-headset"></i>
+                <span>EMOTIV EPOC X</span>
+            </a>
+        </li>
+
+        <div class="device-meta-wrap">
+            <div class="device-meta">
+                <p class="device-meta-label">Data Source</p>
+                <p class="device-meta-value">Shared live session buffer</p>
+            </div>
+        </div>
+    </ul>
+
+    <!-- Main Content -->
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <main class="nf-shell">
+
+                <header class="nf-header">
+                    <div>
+                        <p class="nf-eyebrow">Experiment Control Center</p>
+                        <h1 class="nf-title">NeuroFlow Motion</h1>
+                        <p class="nf-subtitle">Real-time headset orientation and movement signals from the active EEG session.</p>
+                    </div>
+
+                    <div class="nf-status-wrap">
+                        <span class="session-badge" id="rec-badge">Waiting</span>
+                        <span class="connection-pill">
+                            <span class="status-dot" id="status-dot"></span>
+                            <span id="status-text">Waiting for live data...</span>
+                        </span>
+                    </div>
+                </header>
+
+                <section class="live-hero">
+                    <p class="hero-kicker">Motion Monitoring</p>
+                    <h2 class="hero-title">Head orientation, acceleration and magnetic-field signals in real time.</h2>
+
+                    <div class="hero-meta">
+                        <div>
+                            <p class="hero-meta-label">Device</p>
+                            <p class="hero-meta-value">EMOTIV EPOC X</p>
+                        </div>
+                        <div style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);">
+                            <i class="fas fa-compass" style="color:rgba(255,255,255,.72);font-size:.85rem;"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quaternions -->
+                <section class="section-heading">
+                    <div>
+                        <p class="section-kicker">Orientation</p>
+                        <h2 class="section-title">Head Quaternions</h2>
+                        <p class="section-copy">Normalized Q0–Q3 components describing headset orientation in three-dimensional space.</p>
+                    </div>
+                </section>
+
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Quaternion</p>
+                                    <h3 class="motion-card-title">Q0 — W</h3>
+                                    <div class="accent-line" style="background:var(--quat-primary)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-q0">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-q0"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Quaternion</p>
+                                    <h3 class="motion-card-title">Q1 — X</h3>
+                                    <div class="accent-line" style="background:var(--quat-primary)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-q1">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-q1"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Quaternion</p>
+                                    <h3 class="motion-card-title">Q2 — Y</h3>
+                                    <div class="accent-line" style="background:var(--quat-primary)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-q2">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-q2"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Quaternion</p>
+                                    <h3 class="motion-card-title">Q3 — Z</h3>
+                                    <div class="accent-line" style="background:var(--quat-primary)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-q3">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-q3"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="wide-chart-header">
+                                <div>
+                                    <p class="signal-type">Orientation Overview</p>
+                                    <h3 class="wide-chart-title">Combined Quaternion Trend</h3>
+                                </div>
+                            </div>
+                            <div class="wide-chart-body">
+                                <div class="chart-area-lg"><canvas id="ch-quat-all"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accelerometer -->
+                <section class="section-heading">
+                    <div>
+                        <p class="section-kicker">Linear Motion</p>
+                        <h2 class="section-title">Accelerometer</h2>
+                        <p class="section-copy">Raw acceleration values from the headset motion stream across the X, Y and Z axes.</p>
+                    </div>
+                </section>
+
+                <div class="row">
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Acceleration</p>
+                                    <h3 class="motion-card-title">ACCX</h3>
+                                    <div class="accent-line" style="background:var(--acc-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-accX">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-accX"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Acceleration</p>
+                                    <h3 class="motion-card-title">ACCY</h3>
+                                    <div class="accent-line" style="background:var(--acc-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-accY">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-accY"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Acceleration</p>
+                                    <h3 class="motion-card-title">ACCZ</h3>
+                                    <div class="accent-line" style="background:var(--acc-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-accZ">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-accZ"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Magnetometer -->
+                <section class="section-heading">
+                    <div>
+                        <p class="section-kicker">Magnetic Field</p>
+                        <h2 class="section-title">Magnetometer</h2>
+                        <p class="section-copy">Raw magnetic-field measurements from the headset across the X, Y and Z axes.</p>
+                    </div>
+                </section>
+
+                <div class="row">
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Magnetic Field</p>
+                                    <h3 class="motion-card-title">MAGX</h3>
+                                    <div class="accent-line" style="background:var(--mag-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-magX">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-magX"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Magnetic Field</p>
+                                    <h3 class="motion-card-title">MAGY</h3>
+                                    <div class="accent-line" style="background:var(--mag-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-magY">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-magY"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-md-6 mb-4">
+                        <div class="nf-card motion-card">
+                            <div class="motion-card-header">
+                                <div>
+                                    <p class="signal-type">Magnetic Field</p>
+                                    <h3 class="motion-card-title">MAGZ</h3>
+                                    <div class="accent-line" style="background:var(--mag-color)"></div>
+                                </div>
+                                <span class="val-badge" id="lv-magZ">—</span>
+                            </div>
+                            <div class="motion-card-body">
+                                <div class="chart-area-sm"><canvas id="ch-magZ"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reading Guide -->
+                <div class="row mt-2">
+                    <div class="col-12 mb-4">
+                        <div class="nf-card guide-card">
+                            <div class="guide-header">
+                                <div class="guide-icon"><i class="fas fa-info"></i></div>
+                                <div>
+                                    <p class="section-kicker mb-1">Reference</p>
+                                    <h3 class="guide-title">How to Read the Motion Signals</h3>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xl-4 mb-3">
+                                    <div class="guide-section">
+                                        <h6>Quaternions (Q0–Q3)</h6>
+                                        <p class="small mb-2">Describe head orientation in 3D space. Values are normalized to the range [-1, +1].</p>
+                                        <table class="table table-sm table-bordered small mb-1">
+                                            <thead><tr><th>Channel</th><th>Axis</th><th>At Rest</th></tr></thead>
+                                            <tbody>
+                                                <tr><td><strong>Q0</strong></td><td>Scalar (W)</td><td>≈ 1.0</td></tr>
+                                                <tr><td><strong>Q1</strong></td><td>X — nodding</td><td>≈ 0</td></tr>
+                                                <tr><td><strong>Q2</strong></td><td>Y — turning</td><td>≈ 0</td></tr>
+                                                <tr><td><strong>Q3</strong></td><td>Z — tilting</td><td>≈ 0</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <p class="small mb-0">Still head: Q0≈1 and Q1/Q2/Q3≈0. During movement, Q0 may decrease while the other components increase.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-4 mb-3">
+                                    <div class="guide-section">
+                                        <h6>Accelerometer (ACC)</h6>
+                                        <p class="small mb-2">Measures linear head acceleration across three axes using raw Cortex API motion values.</p>
+                                        <table class="table table-sm table-bordered small mb-1">
+                                            <thead><tr><th>Channel</th><th>Direction</th></tr></thead>
+                                            <tbody>
+                                                <tr><td><strong>ACCX</strong></td><td>Forward / Backward</td></tr>
+                                                <tr><td><strong>ACCY</strong></td><td>Left / Right</td></tr>
+                                                <tr><td><strong>ACCZ</strong></td><td>Up / Down (gravity)</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <p class="small mb-0">Flat traces generally indicate little movement, while sharp peaks correspond to faster changes. The chart scale adapts automatically.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-4 mb-3">
+                                    <div class="guide-section">
+                                        <h6>Magnetometer (MAG)</h6>
+                                        <p class="small mb-2">Measures the surrounding magnetic field using raw Cortex API motion values.</p>
+                                        <table class="table table-sm table-bordered small mb-1">
+                                            <thead><tr><th>Channel</th><th>Direction</th></tr></thead>
+                                            <tbody>
+                                                <tr><td><strong>MAGX</strong></td><td>Magnetic field X</td></tr>
+                                                <tr><td><strong>MAGY</strong></td><td>Magnetic field Y</td></tr>
+                                                <tr><td><strong>MAGZ</strong></td><td>Magnetic field Z</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <p class="small mb-0">Values can change gradually as the head rotates and may also be affected by nearby metal objects or electromagnetic interference.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="guide-note">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <strong>Note:</strong> this page reads live motion data shared by <strong>charts.html</strong> through localStorage. Keep charts.html open during the session to receive real-time updates.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/js/sb-admin-2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+<script>
+Chart.defaults.global.defaultFontFamily = "Nunito,sans-serif";
+Chart.defaults.global.defaultFontColor = "#8a8a85";
+
+var BUFFER = 60;
+var MOT_KEYS = ["q0", "q1", "q2", "q3", "accX", "accY", "accZ", "magX", "magY", "magZ"];
+
+var COLORS = {
+    q0: "#4e73df",
+    q1: "#4e73df",
+    q2: "#4e73df",
+    q3: "#4e73df",
+    accX: "#1cc88a",
+    accY: "#1cc88a",
+    accZ: "#1cc88a",
+    magX: "#f6c23e",
+    magY: "#f6c23e",
+    magZ: "#f6c23e"
+};
+
+var QUAT_COLORS = ["#4e73df", "#36b9cc", "#6f42c1", "#858796"];
+
+function emptyData() {
+    return new Array(BUFFER).fill(null);
+}
+
+function emptyLabels() {
+    return new Array(BUFFER).fill("");
+}
+
+function hexToRgba(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
+}
+
+function normalizeQuaternions(history) {
+    var q0arr = history.q0 || [];
+    var q1arr = history.q1 || [];
+    var q2arr = history.q2 || [];
+    var q3arr = history.q3 || [];
+
+    var len = Math.min(q0arr.length, q1arr.length, q2arr.length, q3arr.length);
+
+    var nq0 = [];
+    var nq1 = [];
+    var nq2 = [];
+    var nq3 = [];
+
+    for (var i = 0; i < len; i++) {
+        var norm = Math.sqrt(
+            q0arr[i] * q0arr[i] +
+            q1arr[i] * q1arr[i] +
+            q2arr[i] * q2arr[i] +
+            q3arr[i] * q3arr[i]
+        );
+
+        if (norm === 0) {
+            norm = 1;
+        }
+
+        nq0.push(q0arr[i] / norm);
+        nq1.push(q1arr[i] / norm);
+        nq2.push(q2arr[i] / norm);
+        nq3.push(q3arr[i] / norm);
+    }
+
+    return {
+        q0: nq0,
+        q1: nq1,
+        q2: nq2,
+        q3: nq3
+    };
+}
+
+function oscillatorOptions() {
+    return {
+        maintainAspectRatio: false,
+        animation: { duration: 0 },
+        legend: { display: false },
+        scales: {
+            xAxes: [
+                {
+                    gridLines: { display: false },
+                    ticks: { display: false }
+                }
+            ],
+            yAxes: [
+                {
+                    gridLines: {
+                        color: "#ececea",
+                        borderDash: [3, 3],
+                        zeroLineColor: "#e5e5e0"
+                    },
+                    ticks: {
+                        fontSize: 9,
+                        fontColor: "#8a8a85",
+                        callback: function(v) {
+                            return v.toFixed(1);
+                        }
+                    }
+                }
+            ]
+        },
+        tooltips: {
+            mode: "index",
+            intersect: false,
+            callbacks: {
+                label: function(i) {
+                    return " " + (i.yLabel || 0).toFixed(2);
+                }
+            }
+        }
+    };
+}
+
+function quaternionOptions() {
+    return {
+        maintainAspectRatio: false,
+        animation: { duration: 0 },
+        legend: { display: false },
+        scales: {
+            xAxes: [
+                {
+                    gridLines: { display: false },
+                    ticks: { display: false }
+                }
+            ],
+            yAxes: [
+                {
+                    gridLines: {
+                        color: "#ececea",
+                        borderDash: [3, 3],
+                        zeroLineColor: "#e5e5e0"
+                    },
+                    ticks: {
+                        fontSize: 9,
+                        fontColor: "#8a8a85",
+                        min: -1,
+                        max: 1,
+                        callback: function(v) {
+                            return v.toFixed(2);
+                        }
+                    }
+                }
+            ]
+        },
+        tooltips: {
+            mode: "index",
+            intersect: false,
+            callbacks: {
+                label: function(i) {
+                    return " " + (i.yLabel || 0).toFixed(4);
+                }
+            }
+        }
+    };
+}
+
+var charts = {};
+
+MOT_KEYS.forEach(function(key) {
+    var ctx = document.getElementById("ch-" + key);
+
+    if (!ctx) {
+        return;
+    }
+
+    var color = COLORS[key];
+    var isQuaternion = key === "q0" || key === "q1" || key === "q2" || key === "q3";
+
+    charts[key] = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: emptyLabels(),
+            datasets: [
+                {
+                    data: emptyData(),
+                    borderColor: color,
+                    borderWidth: 2,
+                    backgroundColor: hexToRgba(color, .07),
+                    pointRadius: 0,
+                    lineTension: .4,
+                    fill: true
+                }
+            ]
+        },
+        options: isQuaternion ? quaternionOptions() : oscillatorOptions()
+    });
+});
+
+var chartQuatAll = new Chart(document.getElementById("ch-quat-all"), {
+    type: "line",
+    data: {
+        labels: emptyLabels(),
+        datasets: [
+            {
+                label: "Q0",
+                data: emptyData(),
+                borderColor: QUAT_COLORS[0],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+                lineTension: .4
+            },
+            {
+                label: "Q1",
+                data: emptyData(),
+                borderColor: QUAT_COLORS[1],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+                lineTension: .4
+            },
+            {
+                label: "Q2",
+                data: emptyData(),
+                borderColor: QUAT_COLORS[2],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+                lineTension: .4
+            },
+            {
+                label: "Q3",
+                data: emptyData(),
+                borderColor: QUAT_COLORS[3],
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false,
+                lineTension: .4
+            }
+        ]
+    },
+    options: {
+        maintainAspectRatio: false,
+        animation: { duration: 0 },
+        legend: {
+            display: true,
+            position: "bottom",
+            labels: {
+                boxWidth: 12,
+                padding: 16,
+                fontFamily: "Nunito",
+                fontSize: 11,
+                fontColor: "#6b6b66",
+                usePointStyle: true
+            }
+        },
+        scales: {
+            xAxes: [
+                {
+                    gridLines: { display: false },
+                    ticks: { display: false }
+                }
+            ],
+            yAxes: [
+                {
+                    gridLines: {
+                        color: "#ececea",
+                        borderDash: [3, 3],
+                        zeroLineColor: "#e5e5e0"
+                    },
+                    ticks: {
+                        fontSize: 9,
+                        fontColor: "#8a8a85",
+                        min: -1,
+                        max: 1,
+                        callback: function(v) {
+                            return v.toFixed(2);
+                        }
+                    }
+                }
+            ]
+        },
+        tooltips: {
+            mode: "index",
+            intersect: false,
+            callbacks: {
+                label: function(i, d) {
+                    return " " +
+                        d.datasets[i.datasetIndex].label +
+                        ": " +
+                        (d.datasets[i.datasetIndex].data[i.index] || 0).toFixed(4);
+                }
+            }
+        }
+    }
+});
+
+function updateAllCharts(history) {
+    var normalizedQuaternions = normalizeQuaternions(history);
+
+    ["q0", "q1", "q2", "q3"].forEach(function(key) {
+        var values = (normalizedQuaternions[key] || []).slice(-BUFFER);
+        var chart = charts[key];
+
+        if (!chart) {
+            return;
+        }
+
+        chart.data.datasets[0].data = values;
+        chart.data.labels = new Array(values.length).fill("");
+        chart.update();
+
+        var valueElement = document.getElementById("lv-" + key);
+
+        if (valueElement && values.length > 0) {
+            valueElement.textContent = values[values.length - 1].toFixed(4);
+        }
+    });
+
+    ["accX", "accY", "accZ"].forEach(function(key) {
+        var values = (history[key] || []).slice(-BUFFER);
+        var chart = charts[key];
+
+        if (!chart) {
+            return;
+        }
+
+        chart.data.datasets[0].data = values;
+        chart.data.labels = new Array(values.length).fill("");
+        chart.update();
+
+        var valueElement = document.getElementById("lv-" + key);
+
+        if (valueElement && values.length > 0) {
+            valueElement.textContent = values[values.length - 1].toFixed(1);
+        }
+    });
+
+    ["magX", "magY", "magZ"].forEach(function(key) {
+        var values = (history[key] || []).slice(-BUFFER);
+        var chart = charts[key];
+
+        if (!chart) {
+            return;
+        }
+
+        chart.data.datasets[0].data = values;
+        chart.data.labels = new Array(values.length).fill("");
+        chart.update();
+
+        var valueElement = document.getElementById("lv-" + key);
+
+        if (valueElement && values.length > 0) {
+            valueElement.textContent = values[values.length - 1].toFixed(1);
+        }
+    });
+
+    ["q0", "q1", "q2", "q3"].forEach(function(key, index) {
+        chartQuatAll.data.datasets[index].data = (normalizedQuaternions[key] || []).slice(-BUFFER);
+    });
+
+    var len = Math.min((normalizedQuaternions.q0 || []).length, BUFFER);
+    chartQuatAll.data.labels = new Array(len).fill("");
+    chartQuatAll.update();
+}
+
+// No historical restoration: charts start empty when the page opens.
+var lastTs = 0;
+
+setInterval(function() {
+    var ts = parseInt(localStorage.getItem("bw_ts") || "0");
+    var online = ts > 0 && (Date.now() - ts) < 3000;
+
+    var statusDot = document.getElementById("status-dot");
+    statusDot.style.background = online ? "#1cc88a" : "#c7c7c0";
+    statusDot.className = "status-dot" + (online ? " is-live" : "");
+
+    document.getElementById("status-text").textContent = online ? "Connected" : "Waiting for charts.html...";
+    document.getElementById("status-text").style.color = online ? "#1f8a3f" : "#8a8a85";
+
+    document.getElementById("rec-badge").textContent = online ? "Live" : "Waiting";
+    document.getElementById("rec-badge").className = "session-badge" + (online ? " recording" : "");
+
+    if (ts === lastTs) {
+        return;
+    }
+
+    lastTs = ts;
+
+    var history = JSON.parse(localStorage.getItem("bw_mot_hist") || "null");
+
+    if (history) {
+        updateAllCharts(history);
+    }
+}, 200);
+</script>
+
+</body>
+</html>
